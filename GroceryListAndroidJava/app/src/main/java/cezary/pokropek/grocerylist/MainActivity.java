@@ -32,19 +32,31 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //TODO: making saving functionallity work
+//    saveButton = findViewById(R.id.saveButton);
+//    saveButton.setOnClickListener(new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            saveItem();
+//        }
+//    });
+
+    FloatingActionButton fab = findViewById(R.id.fab);
+    fab.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            createPopupDialog();
+        }
+    });
+
+    }
+
+    private void saveItem() {
+        //TODO: save each item to db
+        //TODO: move to next screen - details screen
 
 
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                createPopupDialog();
-
-
-            }
-        });
     }
 
     private void createPopupDialog() {
