@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+import androidx.recyclerview.widget.RecyclerViewAccessibilityDelegate;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -30,6 +32,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private AlertDialog.Builder builder;
     private AlertDialog dialog;
     private LayoutInflater inflater;
+    private int adapterPosition;
 
     public RecyclerViewAdapter(Context context, List<Item> itemList) {
         this.context = context;
@@ -38,7 +41,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @NonNull
     @Override
-    public RecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.list_row, viewGroup, false);
 
@@ -46,7 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         Item item = itemList.get(position); // obj item
         viewHolder.itemName.setText(MessageFormat.format("Item: {0}", item.getItemName()));
         viewHolder.itemColor.setText(MessageFormat.format("Color: {0}", item.getItemColor()));
@@ -92,7 +95,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public void onClick(View v) {
 
             int position = getAdapterPosition();
-            Item item = itemList.get(position);
+            Item item = itemList.get(getAdapterPosition());
 
             switch (v.getId()){
                 case R.id.editButton:
@@ -142,72 +145,73 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }
 
-    }
+        private void editItem(final Item newItem) {
 
-    private void editItem(final Item newItem) {
+            builder = new AlertDialog.Builder(context);
+            inflater = LayoutInflater.from(context);
+            final View view = inflater.inflate(R.layout.popup, null );
 
-        builder = new AlertDialog.Builder(context);
-        inflater = LayoutInflater.from(context);
-        final View view = inflater.inflate(R.layout.popup, null );
+            Button saveButton;
+            final EditText shopItem;
+            final EditText itemQuantity;
+            final EditText itemColor;
+            final EditText itemSize;
+            TextView title;
 
-         Button saveButton;
-         final EditText shopItem;
-         final EditText itemQuantity;
-         final EditText itemColor;
-         final EditText itemSize;
-         TextView title;
+            shopItem = view.findViewById(R.id.shopItem);
+            itemQuantity = view.findViewById(R.id.itemQuantity);
+            itemColor = view.findViewById(R.id.itemColor);
+            itemSize = view.findViewById(R.id.itemSize);
+            saveButton = view.findViewById(R.id.saveButton);
+            saveButton.setText(R.string.update_text);
+            title = view.findViewById(R.id.title);
 
-        shopItem = view.findViewById(R.id.shopItem);
-        itemQuantity = view.findViewById(R.id.itemQuantity);
-        itemColor = view.findViewById(R.id.itemColor);
-        itemSize = view.findViewById(R.id.itemSize);
-        saveButton = view.findViewById(R.id.saveButton);
-        saveButton.setText(R.string.update_text);
-        title = view.findViewById(R.id.title);
+            title.setText(R.string.edit_item);
+            shopItem.setText(newItem.getItemName());
+            itemQuantity.setText(String.valueOf(newItem.getItemQuantity()));
+            itemColor.setText(newItem.getItemColor());
+            itemSize.setText(String.valueOf(newItem.getItemSize()));
 
-        title.setText(R.string.edit_item);
-        shopItem.setText(newItem.getItemName());
-        itemQuantity.setText(String.valueOf(newItem.getItemQuantity()));
-        itemColor.setText(newItem.getItemColor());
-        itemSize.setText(String.valueOf(newItem.getItemSize()));
+            builder.setView(view);
+            dialog = builder.create();
+            dialog.show();
 
-        builder.setView(view);
-        dialog = builder.create();
-        dialog.show();
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //update item
-                DatabaseHandler databaseHandler = new DatabaseHandler(context);
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                //update items
-                newItem.setItemName(shopItem.getText().toString());
-                newItem.setItemColor(itemColor.getText().toString());
-                newItem.setItemQuantity(Integer.parseInt(itemQuantity.getText().toString()));
-                newItem.setItemSize(Integer.parseInt(itemSize.getText().toString()));
+                    //update item
+                    DatabaseHandler databaseHandler = new DatabaseHandler(context);
 
-                if (!shopItem.getText().toString().isEmpty()
-                        && !itemColor.getText().toString().isEmpty()
-                        && !itemQuantity.getText().toString().isEmpty()
-                        && !itemSize.getText().toString().isEmpty()) {
+                    //update items
+                    newItem.setItemName(shopItem.getText().toString());
+                    newItem.setItemColor(itemColor.getText().toString());
+                    newItem.setItemQuantity(Integer.parseInt(itemQuantity.getText().toString()));
+                    newItem.setItemSize(Integer.parseInt(itemSize.getText().toString()));
 
-                    databaseHandler.updateItem(newItem);
-                    //notifyItemChanged(getAdapterPosition(), newItem); //important!
+                    if (!shopItem.getText().toString().isEmpty()
+                            && !itemColor.getText().toString().isEmpty()
+                            && !itemQuantity.getText().toString().isEmpty()
+                            && !itemSize.getText().toString().isEmpty()) {
 
-                }else {
-                    Snackbar.make(view, "Fields Empty",
-                            Snackbar.LENGTH_SHORT)
-                            .show();
+                        databaseHandler.updateItem(newItem);
+                        notifyItemChanged(getAdapterPosition(), newItem); //important!
+
+                    } else {
+                        Snackbar.make(view, "Fields Empty",
+                                Snackbar.LENGTH_SHORT)
+                                .show();
+                    }
+
+                    dialog.dismiss();
+
+
                 }
+            });
 
-                dialog.dismiss();
-
-
-            }
-        });
+        }
 
     }
-
 
 }
