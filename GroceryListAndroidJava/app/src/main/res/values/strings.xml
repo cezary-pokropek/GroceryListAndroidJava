@@ -16,4 +16,9 @@
     <string name="hint_color">Color</string>
     <string name="hint_size">Size</string>
     <string name="save_button">Save</string>
+    <string name="sure_text">Are you sure? </string>
+    <string name="no_text">No</string>
+    <string name="yes_text">yes</string>
+    <string name="edit_item">Edit Item</string>
+    <string name="update_text">Update</string>
 </resources>

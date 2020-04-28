@@ -54,7 +54,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     //Add Item
-    public void AddItem(Item item) {
+    public void addItem(Item item) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -82,6 +82,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         Constants.KEY_GROCERY_ITEM,
                         Constants.KEY_QTY_NUMBER,
                         Constants.KEY_ITEM_SIZE,
+                        Constants.KEY_COLOR,
                         Constants.KEY_DATE_NAME},
                 Constants.KEY_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
@@ -94,6 +95,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             item.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Constants.KEY_ID))));
             item.setItemName(cursor.getString(cursor.getColumnIndex(Constants.KEY_GROCERY_ITEM)));
             item.setItemQuantity(cursor.getInt(cursor.getColumnIndex(Constants.KEY_QTY_NUMBER)));
+            item.setItemColor(cursor.getString(cursor.getColumnIndex(Constants.KEY_COLOR)));
             item.setItemSize(cursor.getInt(cursor.getColumnIndex(Constants.KEY_ITEM_SIZE)));
 
             // convert Timestamp to sth readable;
@@ -117,6 +119,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         Constants.KEY_GROCERY_ITEM,
                         Constants.KEY_QTY_NUMBER,
                         Constants.KEY_ITEM_SIZE,
+                        Constants.KEY_COLOR,
                         Constants.KEY_DATE_NAME},
                 null, null, null, null,
                 Constants.KEY_DATE_NAME + " DESC");
@@ -127,6 +130,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 item.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Constants.KEY_ID))));
                 item.setItemName(cursor.getString(cursor.getColumnIndex(Constants.KEY_GROCERY_ITEM)));
                 item.setItemQuantity(cursor.getInt(cursor.getColumnIndex(Constants.KEY_QTY_NUMBER)));
+                item.setItemColor(cursor.getString(cursor.getColumnIndex(Constants.KEY_COLOR)));
                 item.setItemSize(cursor.getInt(cursor.getColumnIndex(Constants.KEY_ITEM_SIZE)));
 
                 // convert Timestamp to sth readable;
@@ -144,7 +148,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    //TODO: Add updateItem
+    //Add updateItem
     public int updateItem(Item item) {
         SQLiteDatabase db = this.getWritableDatabase();
 
